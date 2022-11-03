@@ -14,7 +14,9 @@ authRouter.post('/login',
     postAuthRouterMiddleware,
     async (req: Request, res: Response) => {
 
-        const token = await createToken(req.user!)
+        const token = await createToken(req.user!.id)
+
+        await authService.saveUserDevices(req.ip, req.useragent, token.refreshToken)
 
         return res.status(200)
             .cookie('refreshToken', token.refreshToken, {secure: true, httpOnly: true})
@@ -63,7 +65,7 @@ authRouter.post('/refresh-token',
     refreshTokenValidation,
     async (req: Request, res: Response) => {
 
-        const token = await createToken(req.user!)
+        const token = await createToken(req.user!.id)
 
         return res.status(200)
             .cookie('refreshToken', token.refreshToken, {secure: true, httpOnly: true})

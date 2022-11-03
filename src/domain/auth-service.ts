@@ -6,6 +6,7 @@ import {emailsManager} from "../managers/email-manager";
 import {UserAccountType} from "../types/user-account-type";
 import {_generateHash} from "../helperFunctions";
 import {emailConfirmationRepository} from "../repositories/emailConfirmation-repository";
+import {jwsService} from "../application/jws-service";
 
 export const authService = {
     async createUser(login: string, password: string, email: string) {
@@ -74,6 +75,20 @@ export const authService = {
         const userAccount = {accountData: user!, emailConfirmation: emailConfirmation!}
 
         return await emailsManager.sendConfirmationEmail(userAccount)
+    },
+
+    async saveUserDevices(ipAddress: string, userDeviceIngo: any, refreshToken: string) {
+        const userInfo = await jwsService.giveUserIdByToken(refreshToken)
+        console.log('-----> userDeviceIngo: ', userDeviceIngo)
+        console.log('-----> ipAddress: ', ipAddress)
+        const userDevice = {
+            userId: userInfo.userId,
+            deviceId: uuidv4(),
+            ipAddress,
+
+        }
+
+        return
     },
 
     async createUserAccount(userAccount: UserAccountType) {

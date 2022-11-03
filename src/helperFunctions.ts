@@ -16,9 +16,9 @@ export const _generateHash = async (password: string, salt: string) => {
     return await bcrypt.hash(password, salt)
 }
 
-export const createToken = async (user: UserDBType) => {
-    const accessToken = await jwsService.createJWT(user, 10)
-    const refreshToken = await jwsService.createJWT(user, 20)
+export const createToken = async (userId: string) => {
+    const accessToken = await jwsService.createJWT(userId, 10)
+    const refreshToken = await jwsService.createJWT(userId, 20)
 
     return {accessToken, refreshToken}
 }
