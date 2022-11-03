@@ -14,8 +14,10 @@ export const app = express()
 
 const port = process.env.PORT || 5000
 
-app.use(express.json()) // add body-parser
+app.set('trust proxy', true) // for get ip-adress
+
 app.use(cookieParser()) // add cookie-parser
+app.use(express.json()) // add body-parser
 
 app.use('/auth', authRouter)
 app.use('/blogs', blogsRouter)
