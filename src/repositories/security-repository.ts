@@ -10,12 +10,29 @@ export const securityRepository = {
         }
     },
 
+    async checkUserDevice(userId: string, deviceId: string) {
+        return await securityCollection
+            .findOne({$and: [{userId}, {'userDevice.deviceId': deviceId}]})
+    },
+
     async giveUserDevice(userId: string, userDevice: string): Promise<DeviceSecurityType | null> {
-        return await securityCollection.findOne({$and: [{userId}, {'userDevice.deviceTitle': userDevice}]})
+        return await securityCollection
+            .findOne({$and: [{userId}, {'userDevice.deviceTitle': userDevice}]})
     },
 
     async giveAllActiveSessions(userId: string) {
-        return await securityCollection.find({userId}, {projection: {_id: false}}).toArray()
+        return await securityCollection
+            .find({userId}, {projection: {_id: false}}).toArray()
+    },
+
+    async giveUserId(deviceId: string) {
+        return await securityCollection.findOne({deviceId}/*, {projection: {_id: false, userDevice: false}}*/)
+    },
+
+    async deleteDeviceById(deviceId: string) {
+        const result = await securityCollection.deleteOne({deviceId})
+
+        return result.deletedCount === 1
     },
 
     async deleteAllActiveSessions(userId: string) {

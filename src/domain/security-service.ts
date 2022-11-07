@@ -25,6 +25,10 @@ export const securityService = {
         return await securityRepository.giveUserDevice(createDevice.userId, createDevice.userDevice.deviceTitle)
     },
 
+    async checkUserDevice(userId: string, deviceId: string) {
+        return await securityRepository.checkUserDevice(userId, deviceId)
+    },
+
     async giveUserDevice(userId: string, userDevice: string): Promise<DeviceSecurityType | null> {
         return await securityRepository.giveUserDevice(userId, userDevice)
     },
@@ -39,8 +43,26 @@ export const securityService = {
         return activeSessions.map(activeSession => activeSessionsOutputType(activeSession))
     },
 
-    async deleteAllActiveSessions(userId: string) {
+    async giveUserId(deviceId: string) {
+        return await securityRepository.giveUserId(deviceId)
+    },
+
+    async deleteDeviceById(deviceId: string) {
+        return await securityRepository.deleteDeviceById(deviceId)
+    },
+
+    async deleteAllActiveSessions(userId: string): Promise<boolean> {
         await securityRepository.deleteAllActiveSessions(userId)
         const activeSessions = await securityRepository.giveAllActiveSessions(userId)
+
+        if (activeSessions.length !== 1) {
+           return false
+        }
+
+        if (activeSessions[0].userId !== userId) {
+            return false
+        }
+
+        return true
     }
 }

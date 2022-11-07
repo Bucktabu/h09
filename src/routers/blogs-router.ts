@@ -123,7 +123,7 @@ blogsRouter.put('/:id',
         }
 
         const blog = await blogsService.giveBlogById(req.params.id)
-        res.status(204).send(blog)
+        return res.status(204).send(blog)
     }
 )
 
@@ -137,6 +137,6 @@ blogsRouter.delete('/:id',
             return res.sendStatus(404)
         }
 
-        res.sendStatus(204)
+        return res.sendStatus(204)
     }
 )
