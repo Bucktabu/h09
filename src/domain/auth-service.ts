@@ -78,7 +78,7 @@ export const authService = {
     },
 
     async saveUserDevices(ipAddress: string, userDeviceIngo: any, refreshToken: string) {
-        const userInfo = await jwsService.giveUserIdByToken(refreshToken)
+        const userInfo = await jwsService.giveUserInfoByToken(refreshToken)
         console.log('-----> userDeviceIngo: ', userDeviceIngo)
         console.log('-----> ipAddress: ', ipAddress)
         const userDevice = {

@@ -10,6 +10,7 @@
     "@types/jest": "^29.0.3",
     "@types/nodemailer": "^6.4.6",
     "@types/supertest": "^2.0.12",
+    "@types/user-agents": "^1.0.2",
     "@types/uuid": "^8.3.4",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.0",
@@ -25,6 +26,7 @@
     "nodemailer": "^6.8.0",
     "supertest": "^6.2.4",
     "ts-jest": "^29.0.2",
+    "user-agents": "^1.0.1192",
     "uuid": "^9.0.0"
   },
   "scripts": {

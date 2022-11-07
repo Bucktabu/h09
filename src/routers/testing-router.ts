@@ -6,6 +6,7 @@ import {usersRepository} from "../repositories/users-repository";
 import {commentsRepository} from "../repositories/comments-repository";
 import {emailConfirmationRepository} from "../repositories/emailConfirmation-repository";
 import {jwtBlackList} from "../repositories/jwtBlackList";
+import {securityRepository} from "../repositories/security-repository";
 
 export const testingRouter = Router({})
 
@@ -14,9 +15,10 @@ testingRouter.delete('/all-data', async (req: Request, res: Response) => {
         await blogsRepository.deleteAllBlogs()
         await commentsRepository.deleteAllComments()
         await emailConfirmationRepository.deleteAllEmailConfirmation()
-        await postsRepository.deleteAllPosts()
-        await usersRepository.deleteAllUsers()
         await jwtBlackList.deleteAll()
+        await postsRepository.deleteAllPosts()
+        await securityRepository.deleteAll()
+        await usersRepository.deleteAllUsers()
 
         return res.sendStatus(204)
     } catch (e) {

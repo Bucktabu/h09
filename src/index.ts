@@ -4,6 +4,7 @@ import {authRouter} from "./routers/auth-router";
 import {blogsRouter} from "./routers/blogs-router";
 import {commentsRouter} from "./routers/comments-router";
 import {postsRouter} from "./routers/posts-router"
+import {securityRouter} from "./routers/security-router";
 import {testingRouter} from "./routers/testing-router";
 import {usersRouter} from "./routers/users-router";
 
@@ -16,16 +17,14 @@ const port = process.env.PORT || 5000
 
 app.set('trust proxy', true) // for get ip-address
 
-const useragent = require('express-useragent');
-
 app.use(cookieParser()) // add cookie-parser
 app.use(express.json()) // add body-parser
-app.use(useragent.express());
 
 app.use('/auth', authRouter)
 app.use('/blogs', blogsRouter)
 app.use('/comments', commentsRouter)
 app.use('/posts', postsRouter)
+app.use('/security', securityRouter)
 app.use('/testing', testingRouter)
 app.use('/users', usersRouter)
 

@@ -10,7 +10,7 @@ export const refreshTokenValidation = async (req: Request, res: Response, next: 
         return res.sendStatus(401)
     }
 
-    const userInfo = await jwsService.giveUserIdByToken(req.cookies.refreshToken)
+    const userInfo = await jwsService.giveUserInfoByToken(req.cookies.refreshToken)
 
     if (!userInfo) {
         return res.sendStatus(401)

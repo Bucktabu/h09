@@ -1,5 +1,9 @@
 import {Request, Response, Router} from "express";
+import UserAgent from 'user-agents';
+import {v4 as uuidv4} from "uuid";
 import {authService} from "../domain/auth-service";
+import {securityService} from "../domain/security-service";
+import {jwsService} from "../application/jws-service";
 import {usersService} from "../domain/user-service";
 import {getAuthRouterMiddleware,
         postAuthRouterMiddleware,
@@ -14,9 +18,24 @@ authRouter.post('/login',
     postAuthRouterMiddleware,
     async (req: Request, res: Response) => {
 
-        const token = await createToken(req.user!.id)
+        const userDevice = new UserAgent().data.deviceCategory
+        // в каком сценарии может быть null
+        const deviceInfo = await securityService.giveUserDevice(req.user!.id, userDevice!)
 
-        await authService.saveUserDevices(req.ip, req.useragent, token.refreshToken)
+        let deviceId
+        if (!deviceInfo) {
+            deviceId = uuidv4()
+        } else {
+            deviceId = deviceInfo.userDevice.deviceId
+        }
+
+        const token = await createToken(deviceId)
+
+        if (!deviceInfo) {
+            const tokenInfo = await jwsService.giveUserInfoByToken(token.refreshToken)
+            await securityService.createUserDevice(tokenInfo, userDevice!, req.ip)
+            // Это не тот случай, когда следует обернуть трайкетчем? или при создании вылезет ошибка
+        }
 
         return res.status(200)
             .cookie('refreshToken', token.refreshToken, {secure: true, httpOnly: true})
