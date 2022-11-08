@@ -59,7 +59,7 @@ export const securityService = {
             return false
         }
 
-        await securityRepository.deleteAllActiveSessions(userId)
+        await securityRepository.deleteAllActiveSessions()
         await securityRepository.createUserDevice(currentSession!)
 
         return true
