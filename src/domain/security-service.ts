@@ -4,15 +4,16 @@ import {v4 as uuidv4} from "uuid";
 import {activeSessionsOutputType} from "../dataMapping/toActiveSessionsOutputType";
 
 export const securityService = {
-    async createUserDevice(tokenInfo: any, userDevice: string, ipAddress: string) {
+    async createUserDevice(userId: string, tokenInfo: any, userDevice: string, ipAddress: string) {
+        console.log('--->> userId from security service', userId)
         const createDevice: DeviceSecurityType = {
-            userId: tokenInfo.id,
+            userId,
             userDevice: {
                 deviceTitle: userDevice,
                 deviceId: uuidv4(),
                 ipAddress,
                 iat: tokenInfo.iat,
-                end: tokenInfo.end
+                exp: tokenInfo.exp
             }
         }
 
@@ -43,7 +44,7 @@ export const securityService = {
         return activeSessions.map(activeSession => activeSessionsOutputType(activeSession))
     },
 
-    async giveUserId(deviceId: string) {
+    async giveDeviseById(deviceId: string) {
         return await securityRepository.giveUserId(deviceId)
     },
 

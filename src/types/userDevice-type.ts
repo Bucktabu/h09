@@ -3,5 +3,5 @@ export type UserDeviceType = {
     deviceId: string,
     ipAddress: string,
     iat: string,
-    end: string
+    exp: string
 }

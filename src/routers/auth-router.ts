@@ -33,10 +33,11 @@ authRouter.post('/login',
 
         if (!deviceInfo) {
             const tokenInfo = await jwsService.giveUserInfoByToken(token.refreshToken)
-            await securityService.createUserDevice(tokenInfo, userDevice!, req.ip)
+            console.log('----->> tokenInfo: ', tokenInfo)
+            await securityService.createUserDevice(req.user!.id, tokenInfo, userDevice!, req.ip)
             // Это не тот случай, когда следует обернуть трайкетчем? или при создании вылезет ошибка
         }
-
+        console.log('----->> token.refreshToken:', token.refreshToken)
         return res.status(200)
             .cookie('refreshToken', token.refreshToken, {secure: true, httpOnly: true})
             .send({accessToken: token.accessToken})
@@ -84,6 +85,7 @@ authRouter.post('/refresh-token',
     refreshTokenValidation,
     async (req: Request, res: Response) => {
 
+        await jwsService.addTokenInBlackList(req.cookies.refreshToken)
         const token = await createToken(req.user!.id)
 
         return res.status(200)
@@ -95,6 +97,7 @@ authRouter.post('/refresh-token',
 authRouter.post('/logout',
     refreshTokenValidation,
     async (req: Request, res: Response) => {
+        await jwsService.addTokenInBlackList(req.cookies.refreshToken)
 
         return res.sendStatus(204)
     }

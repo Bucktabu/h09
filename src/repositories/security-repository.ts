@@ -36,7 +36,7 @@ export const securityRepository = {
     },
 
     async deleteAllActiveSessions(userId: string) {
-        return await securityCollection.deleteMany( {$not: {userId}})
+        return await securityCollection.deleteMany({userId: {$nin: [userId]}})
     },
 
     async deleteAll(): Promise<boolean> {

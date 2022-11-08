@@ -4,8 +4,8 @@ import {settings} from "../settings";
 import {jwtBlackList} from "../repositories/jwtBlackList";
 
 export const jwsService = {
-    async createJWT(userId: string, timeToExpired: number) {
-        return jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: `${timeToExpired}s`})
+    async createJWT(deviceId: string, timeToExpired: number) {
+        return jwt.sign({deviceId}, settings.JWT_SECRET, {expiresIn: `${timeToExpired}s`})
     },
 
     async giveUserInfoByToken(token: string) {

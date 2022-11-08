@@ -34,7 +34,7 @@ securityRouter.delete('/devices/:deviceId',
     refreshTokenValidation,
     async (req: Request, res: Response) => {
 
-        const userId = await securityService.giveUserId(req.params.deviceId)
+        const userId = await securityService.giveDeviseById(req.params.deviceId)
 
         if (!userId) {
             return res.sendStatus(404)
