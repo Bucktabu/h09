@@ -10,7 +10,7 @@ export const securityService = {
             userId,
             userDevice: {
                 deviceTitle: userDevice,
-                deviceId: uuidv4(),
+                deviceId: tokenInfo.deviceId,
                 ipAddress,
                 iat: tokenInfo.iat,
                 exp: tokenInfo.exp
@@ -45,24 +45,22 @@ export const securityService = {
     },
 
     async giveDeviseById(deviceId: string) {
-        return await securityRepository.giveUserId(deviceId)
+        return await securityRepository.giveDeviseById(deviceId)
     },
 
     async deleteDeviceById(deviceId: string) {
         return await securityRepository.deleteDeviceById(deviceId)
     },
 
-    async deleteAllActiveSessions(userId: string): Promise<boolean> {
-        await securityRepository.deleteAllActiveSessions(userId)
-        const activeSessions = await securityRepository.giveAllActiveSessions(userId)
+    async deleteAllActiveSessions(deviceId: string, userId: string): Promise<boolean> {
+        const currentSession = await securityRepository.giveDeviseById(deviceId)
 
-        if (activeSessions.length !== 1) {
-           return false
-        }
-
-        if (activeSessions[0].userId !== userId) {
+        if (!currentSession) {
             return false
         }
+
+        await securityRepository.deleteAllActiveSessions(userId)
+        await securityRepository.createUserDevice(currentSession!)
 
         return true
     }

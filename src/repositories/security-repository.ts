@@ -25,18 +25,26 @@ export const securityRepository = {
             .find({userId}, {projection: {_id: false}}).toArray()
     },
 
-    async giveUserId(deviceId: string) {
-        return await securityCollection.findOne({deviceId}/*, {projection: {_id: false, userDevice: false}}*/)
+    async giveDeviseById(deviceId: string) {
+        return await securityCollection
+            .findOne({'userDevice.deviceId': deviceId}, {projection: {_id: false}})
     },
 
     async deleteDeviceById(deviceId: string) {
-        const result = await securityCollection.deleteOne({deviceId})
+        const result = await securityCollection.deleteOne({'userDevice.deviceId': deviceId})
 
         return result.deletedCount === 1
     },
 
-    async deleteAllActiveSessions(userId: string) {
-        return await securityCollection.deleteMany({userId: {$nin: [userId]}})
+    async deleteAllActiveSessions(): Promise<boolean> {
+        try {
+            await securityCollection.deleteMany({})
+            return true
+        } catch (e) {
+            console.log('securityCollection => deleteAll =>', e)
+            return false
+        }
+        // return await securityCollection.deleteMany({userId: {$nin: [userId]}})
     },
 
     async deleteAll(): Promise<boolean> {
@@ -44,7 +52,7 @@ export const securityRepository = {
             await securityCollection.deleteMany({})
             return true
         } catch (e) {
-            console.log('postsCollection => deleteAllPosts =>', e)
+            console.log('securityCollection => deleteAll =>', e)
             return false
         }
     }

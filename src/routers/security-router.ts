@@ -20,17 +20,17 @@ securityRouter.get('/devices',
 securityRouter.delete('/devices',
     refreshTokenValidation,
     async (req: Request, res: Response) => {
-        const result = await securityService.deleteAllActiveSessions(req.user!.id)
+        const result = await securityService.deleteAllActiveSessions(req.body.deviseInfo.deviceId, req.user!.id)
 
         if (!result) {
             return res.sendStatus(404)
         }
 
-        return res.status(204)
+        return res.sendStatus(204)
     }
 )
 
-securityRouter.delete('/devices/:deviceId',
+securityRouter.delete('/devices/:deviceId', // возникает баг или фича, что при удалении единиственной активной сессии, нужно повторно логиниться
     refreshTokenValidation,
     async (req: Request, res: Response) => {
 

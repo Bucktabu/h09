@@ -19,8 +19,8 @@ export const refreshTokenValidation = async (req: Request, res: Response, next: 
         return res.sendStatus(401)
     }
 
-    const devise = await securityService.giveDeviseById(deviseInfo.id)
-    console.log('----->> devise: ', devise)
+    const devise = await securityService.giveDeviseById(deviseInfo.deviceId)
+
     if (!devise) {
         return res.sendStatus(401)
     }
@@ -28,11 +28,10 @@ export const refreshTokenValidation = async (req: Request, res: Response, next: 
     const user = await usersService.giveUserById(devise.userId)
 
     if (!user) {
-        console.log('4')
         return res.sendStatus(401)
     }
 
     req.user = user
-    //req.body.device = devise
+    req.body.deviseInfo = deviseInfo
     next()
 }

@@ -33,9 +33,7 @@ authRouter.post('/login',
 
         if (!deviceInfo) {
             const tokenInfo = await jwsService.giveUserInfoByToken(token.refreshToken)
-            console.log('----->> tokenInfo: ', tokenInfo)
             await securityService.createUserDevice(req.user!.id, tokenInfo, userDevice!, req.ip)
-            // Это не тот случай, когда следует обернуть трайкетчем? или при создании вылезет ошибка
         }
         console.log('----->> token.refreshToken:', token.refreshToken)
         return res.status(200)
