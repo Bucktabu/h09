@@ -21,7 +21,7 @@ authRouter.post('/login',
     async (req: Request, res: Response) => {
 
         const userDevice = new UserAgent().data
-        // в каком сценарии может быть null
+
         const deviceInfo = await securityService.giveUserDevice(req.user!.id, userDevice)
 
         let deviceId
