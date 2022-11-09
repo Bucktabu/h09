@@ -12,8 +12,8 @@ export const securityService = {
                 deviceTitle: userDevice.deviceCategory,
                 browser: userDevice.userAgent,
                 ipAddress,
-                iat: tokenInfo.iat.toISOString(),
-                exp: tokenInfo.exp.toISOString()
+                iat: tokenInfo.iat,
+                exp: tokenInfo.exp
             }
         }
         console.log('-----> createDevice:', createDevice)

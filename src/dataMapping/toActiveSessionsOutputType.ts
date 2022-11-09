@@ -5,6 +5,6 @@ export const activeSessionsOutputType = (device: DeviceSecurityType) => {
         deviceId: device.userDevice.deviceId,
         title: device.userDevice.deviceTitle,
         ip: device.userDevice.ipAddress,
-        lastActiveDate: device.userDevice.iat
+        lastActiveDate: new Date(Number(device.userDevice.iat)).toISOString()
     }
 }
