@@ -43,7 +43,7 @@ export const securityService = {
         return activeSessions.map(activeSession => activeSessionsOutputType(activeSession))
     },
 
-    async giveDeviseById(deviceId: string): Promise<DeviceSecurityType | null> {
+    async giveDeviceById(deviceId: string): Promise<DeviceSecurityType | null> {
         const device = await securityRepository.giveDeviseById(deviceId)
 
         if (!device) {

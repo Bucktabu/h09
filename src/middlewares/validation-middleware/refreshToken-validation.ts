@@ -19,7 +19,7 @@ export const refreshTokenValidation = async (req: Request, res: Response, next: 
         return res.sendStatus(401)
     }
 
-    const devise = await securityService.giveDeviseById(deviceInfo.deviceId)
+    const devise = await securityService.giveDeviceById(deviceInfo.deviceId)
 
     if (!devise) {
         return res.sendStatus(401)

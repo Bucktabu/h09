@@ -1547,6 +1547,11 @@ expect@^29.0.0, expect@^29.0.3:
     jest-message-util "^29.0.3"
     jest-util "^29.0.3"
 
+express-limiter@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/express-limiter/-/express-limiter-1.6.1.tgz#70ede144f9e875e3c7e120644018a6f7784bda71"
+  integrity sha512-w/Xz/FIHuAOIVIUeHSe6g2rSYTqCSKA9WFLO2CxX15BzEAK+avp7HoYd7pu/M2tEp5E/to253+4x8vQ6WcTJkQ==
+
 express-useragent@^1.0.15:
   version "1.0.15"
   resolved "https://registry.yarnpkg.com/express-useragent/-/express-useragent-1.0.15.tgz#cefda5fa4904345d51d3368b117a8dd4124985d9"
@@ -2884,6 +2889,11 @@ range-parser@~1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.1.tgz#3cf37023d199e1c24d1a55b84800c2f3e6468031"
   integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
+
+rate-limiter-flexible@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/rate-limiter-flexible/-/rate-limiter-flexible-2.4.1.tgz#c74cfe36ac2cbfe56f68ded9a3b4b2fde1963c41"
+  integrity sha512-dgH4T44TzKVO9CLArNto62hJOwlWJMLUjVVr/ii0uUzZXEXthDNr7/yefW5z/1vvHAfycc1tnuiYyNJ8CTRB3g==
 
 raw-body@2.5.1:
   version "2.5.1"

@@ -11,16 +11,18 @@ import {getAuthRouterMiddleware,
         postResendingRegistrationEmailMiddleware} from "../middlewares/authRouter-middleware";
 import {refreshTokenValidation} from "../middlewares/validation-middleware/refreshToken-validation";
 import {createToken} from "../helperFunctions";
+import {loginLimiter} from "../middlewares/validation-middleware/login-limiter";
 
 export const authRouter = Router({})
 
 authRouter.post('/login',
     postAuthRouterMiddleware,
+    loginLimiter,
     async (req: Request, res: Response) => {
 
-        const userDevice = new UserAgent().data.deviceCategory
+        const userDevice = new UserAgent().data
         // в каком сценарии может быть null
-        const deviceInfo = await securityService.giveUserDevice(req.user!.id, userDevice!)
+        const deviceInfo = await securityService.giveUserDevice(req.user!.id, userDevice.deviceCategory!)
 
         let deviceId
         if (!deviceInfo) {
@@ -33,7 +35,7 @@ authRouter.post('/login',
 
         if (!deviceInfo) {
             const tokenInfo = await jwsService.giveDeviceInfoByToken(token.refreshToken)
-            const newUserDevice = await securityService.createUserDevice(req.user!.id, tokenInfo, userDevice!, req.ip)
+            const newUserDevice = await securityService.createUserDevice(req.user!.id, tokenInfo, userDevice.deviceCategory!, req.ip)
             console.log('----->> newUserDevice: ', newUserDevice)
         }
         console.log('----->> refreshToken=', token.refreshToken)

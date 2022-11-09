@@ -34,17 +34,13 @@ securityRouter.delete('/devices/:deviceId', // возникает баг или 
     refreshTokenValidation,
     async (req: Request, res: Response) => {
 
-        if (!req.params.deviceId.trim()) {
+        const userDevice = await securityService.giveDeviceById(req.params.deviceId)
+
+        if (!userDevice) {
             return res.sendStatus(404)
         }
 
-        const userId = await securityService.giveDeviseById(req.params.deviceId)
-
-        if (!userId) {
-            return res.sendStatus(404)
-        }
-
-        if (userId.userId !== req.user!.id) {
+        if (userDevice.userId !== req.user!.id) {
             return res.sendStatus(403)
         }
 
