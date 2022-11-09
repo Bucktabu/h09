@@ -17,8 +17,8 @@ export const _generateHash = async (password: string, salt: string) => {
 }
 
 export const createToken = async (deviceId: string) => {
-    const accessToken = await jwsService.createJWT(deviceId, 100000)
-    const refreshToken = await jwsService.createJWT(deviceId, 200000)
+    const accessToken = await jwsService.createJWT(deviceId, 10)
+    const refreshToken = await jwsService.createJWT(deviceId, 20)
 
     return {accessToken, refreshToken}
 }
