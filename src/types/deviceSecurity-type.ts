@@ -3,8 +3,9 @@ import {UserDeviceType} from "./userDevice-type";
 export type DeviceSecurityType = {
     userId: string,
     /**
-     *  UserDeviceType: deviceTitle
-     *                  deviceId
+     *  UserDeviceType: deviceId
+     *                  deviceTitle
+     *                  brouser
      *                  ip-address
      *                  iat
      *                  end

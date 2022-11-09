@@ -3,18 +3,20 @@ import {DeviceSecurityType} from "../types/deviceSecurity-type";
 import {activeSessionsOutputType} from "../dataMapping/toActiveSessionsOutputType";
 
 export const securityService = {
-    async createUserDevice(userId: string, tokenInfo: any, userDevice: string, ipAddress: string): Promise<DeviceSecurityType | null> {
-        console.log('--->> userId from security service', userId)
+    async createUserDevice(userId: string, tokenInfo: any, userDevice: any, ipAddress: string): Promise<DeviceSecurityType | null> {
+
         const createDevice: DeviceSecurityType = {
             userId,
             userDevice: {
-                deviceTitle: userDevice,
                 deviceId: tokenInfo.deviceId,
+                deviceTitle: userDevice.deviceCategory,
+                browser: userDevice.userAgent,
                 ipAddress,
                 iat: tokenInfo.iat,
                 exp: tokenInfo.exp
             }
         }
+        console.log('-----> createDevice:', createDevice)
 
         const createdDevice = await securityRepository.createUserDevice(createDevice)
 
@@ -22,15 +24,15 @@ export const securityService = {
             return null
         }
 
-        return await securityRepository.giveUserDevice(createDevice.userId, createDevice.userDevice.deviceTitle)
+        return await securityRepository.giveUserDevice(userId, userDevice.deviceCategory, userDevice.userAgent)
     },
 
     async checkUserDevice(userId: string, deviceId: string) {
         return await securityRepository.checkUserDevice(userId, deviceId)
     },
 
-    async giveUserDevice(userId: string, userDevice: string): Promise<DeviceSecurityType | null> {
-        return await securityRepository.giveUserDevice(userId, userDevice)
+    async giveUserDevice(userId: string, userDevice: any): Promise<DeviceSecurityType | null> {
+        return await securityRepository.giveUserDevice(userId, userDevice.deviceCategory, userDevice.userAgent)
     },
 
     async giveAllActiveSessions(userId: string) {

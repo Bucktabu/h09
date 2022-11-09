@@ -22,7 +22,8 @@ authRouter.post('/login',
 
         const userDevice = new UserAgent().data
         // в каком сценарии может быть null
-        const deviceInfo = await securityService.giveUserDevice(req.user!.id, userDevice.deviceCategory!)
+        console.log(userDevice)
+        const deviceInfo = await securityService.giveUserDevice(req.user!.id, userDevice)
 
         let deviceId
         if (!deviceInfo) {
@@ -35,7 +36,7 @@ authRouter.post('/login',
 
         if (!deviceInfo) {
             const tokenInfo = await jwsService.giveDeviceInfoByToken(token.refreshToken)
-            const newUserDevice = await securityService.createUserDevice(req.user!.id, tokenInfo, userDevice.deviceCategory!, req.ip)
+            const newUserDevice = await securityService.createUserDevice(req.user!.id, tokenInfo, userDevice, req.ip)
             console.log('----->> newUserDevice: ', newUserDevice)
         }
         console.log('----->> refreshToken=', token.refreshToken)

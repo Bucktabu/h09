@@ -1,6 +1,7 @@
 export type UserDeviceType = {
-    deviceTitle: string,
     deviceId: string,
+    deviceTitle: string,
+    browser: string,
     ipAddress: string,
     iat: string,
     exp: string

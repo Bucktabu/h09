@@ -15,9 +15,15 @@ export const securityRepository = {
             .findOne({$and: [{userId}, {'userDevice.deviceId': deviceId}]})
     },
 
-    async giveUserDevice(userId: string, userDevice: string): Promise<DeviceSecurityType | null> {
+    async giveUserDevice(userId: string, deviceTitle: string, browser: string): Promise<DeviceSecurityType | null> {
         return await securityCollection
-            .findOne({$and: [{userId}, {'userDevice.deviceTitle': userDevice}]})
+            .findOne({
+                $and: [
+                    {userId},
+                    {'userDevice.deviceTitle': deviceTitle},
+                    {'userDevice.browser': browser}
+                ]
+            }, {projection: {_id: false}})
     },
 
     async giveAllActiveSessions(userId: string) {
