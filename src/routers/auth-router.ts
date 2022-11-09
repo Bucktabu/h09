@@ -17,12 +17,11 @@ export const authRouter = Router({})
 
 authRouter.post('/login',
     postAuthRouterMiddleware,
-    loginLimiter, // проверить потом записать в бд
+    //loginLimiter, // проверить потом записать в бд
     async (req: Request, res: Response) => {
 
         const userDevice = new UserAgent().data
         // в каком сценарии может быть null
-        console.log(userDevice)
         const deviceInfo = await securityService.giveUserDevice(req.user!.id, userDevice)
 
         let deviceId
@@ -36,10 +35,9 @@ authRouter.post('/login',
 
         if (!deviceInfo) {
             const tokenInfo = await jwsService.giveDeviceInfoByToken(token.refreshToken)
-            const newUserDevice = await securityService.createUserDevice(req.user!.id, tokenInfo, userDevice, req.ip)
-            console.log('----->> newUserDevice: ', newUserDevice)
+            await securityService.createUserDevice(req.user!.id, tokenInfo, userDevice, req.ip)
         }
-        console.log('----->> refreshToken=', token.refreshToken)
+        console.log('----->> refreshToken:', token.refreshToken)
         return res.status(200)
             .cookie('refreshToken', token.refreshToken, {secure: true, httpOnly: true})
             .send({accessToken: token.accessToken})
@@ -50,8 +48,8 @@ authRouter.post('/registration',
     postRegistrationMiddleware,
     async (req: Request, res: Response) => {
 
-        const result = await authService.createUser(req.body.login, req.body.password, req.body.email)
-        console.log('-----> result: ', result)
+        await authService.createUser(req.body.login, req.body.password, req.body.email)
+
         return res.sendStatus(204)
     }
 )
@@ -89,7 +87,7 @@ authRouter.post('/refresh-token',
 
         await jwsService.addTokenInBlackList(req.cookies.refreshToken)
         const token = await createToken(req.user!.id)
-
+        console.log('----->> refreshToken:', token.refreshToken)
         return res.status(200)
             .cookie('refreshToken', token.refreshToken, {secure: true, httpOnly: true})
             .send({accessToken: token.accessToken})

@@ -3,6 +3,7 @@ import {settings} from "../settings";
 import {jwtBlackList} from "../repositories/jwtBlackList";
 
 export const jwsService = {
+    //TODO добавить юзер айди в пэйлоад
     async createJWT(deviceId: string, timeToExpired: number) {
         return jwt.sign({deviceId}, settings.JWT_SECRET, {expiresIn: `${timeToExpired}s`})
     },

@@ -7,6 +7,9 @@ export const refreshTokenValidation = async (req: Request, res: Response, next: 
     // Проверяем токен в блеклисте. Тк в токене у нас хранится айди девайса, по этому айди
     // достаем из бд информацию о девайсе, в которой к айди девайса привязан айди пользователя
     // и находим пользователя по айди
+
+    if (!req.cookies.refreshToken) return res.sendStatus(401)
+
     const tokenInBlackList = await jwsService.checkTokenInBlackList(req.cookies.refreshToken)
 
     if (tokenInBlackList) {
