@@ -59,15 +59,12 @@ export const securityService = {
         return await securityRepository.deleteDeviceById(deviceId)
     },
 
-    async deleteAllActiveSessions(deviceId: string, userId: string): Promise<boolean> {
-        const currentSession = await securityRepository.giveDeviseById(deviceId)
+    async deleteAllActiveSessions(userId: string, deviceId: string): Promise<boolean> {
+        const result = await securityRepository.deleteAllActiveSessions(userId, deviceId)
 
-        if (!currentSession) {
+        if (!result) {
             return false
         }
-
-        await securityRepository.deleteAllActiveSessions()
-        await securityRepository.createUserDevice(currentSession!)
 
         return true
     }

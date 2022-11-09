@@ -17,7 +17,7 @@ export const authRouter = Router({})
 
 authRouter.post('/login',
     postAuthRouterMiddleware,
-    loginLimiter,
+    loginLimiter, // проверить потом записать в бд
     async (req: Request, res: Response) => {
 
         const userDevice = new UserAgent().data

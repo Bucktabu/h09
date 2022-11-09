@@ -42,15 +42,15 @@ export const securityRepository = {
         return result.deletedCount === 1
     },
 
-    async deleteAllActiveSessions(): Promise<boolean> {
+    async deleteAllActiveSessions(userId: string, deviceId: string): Promise<boolean> {
         try {
-            await securityCollection.deleteMany({})
+            await securityCollection
+                .deleteMany({userId, 'userDevice.deviceId': {$ne: deviceId}})
             return true
         } catch (e) {
-            console.log('securityCollection => deleteAll =>', e)
+            console.log('securityCollection => deleteAllActiveSessions =>', e)
             return false
         }
-        // return await securityCollection.deleteMany({userId: {$nin: [userId]}})
     },
 
     async deleteAll(): Promise<boolean> {

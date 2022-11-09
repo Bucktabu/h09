@@ -13,7 +13,7 @@ export const refreshTokenValidation = async (req: Request, res: Response, next: 
         return res.sendStatus(401)
     }
 
-    const deviceInfo = await jwsService.giveDeviceInfoByToken(req.cookies.refreshToken)
+    const deviceInfo = await jwsService.giveDeviceInfoByToken(req.cookies.refreshToken) // payload unpackAndCheck
 
     if (!deviceInfo) {
         return res.sendStatus(401)
