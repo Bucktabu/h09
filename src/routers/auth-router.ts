@@ -32,10 +32,11 @@ authRouter.post('/login',
         const token = await createToken(deviceId)
 
         if (!deviceInfo) {
-            const tokenInfo = await jwsService.giveUserInfoByToken(token.refreshToken)
-            await securityService.createUserDevice(req.user!.id, tokenInfo, userDevice!, req.ip)
+            const tokenInfo = await jwsService.giveDeviceInfoByToken(token.refreshToken)
+            const newUserDevice = await securityService.createUserDevice(req.user!.id, tokenInfo, userDevice!, req.ip)
+            console.log('----->> newUserDevice: ', newUserDevice)
         }
-        console.log('----->> token.refreshToken:', token.refreshToken)
+        console.log('----->> refreshToken=', token.refreshToken)
         return res.status(200)
             .cookie('refreshToken', token.refreshToken, {secure: true, httpOnly: true})
             .send({accessToken: token.accessToken})

@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken'
-import {UserDBType} from "../types/user-type";
 import {settings} from "../settings";
 import {jwtBlackList} from "../repositories/jwtBlackList";
 
@@ -8,7 +7,7 @@ export const jwsService = {
         return jwt.sign({deviceId}, settings.JWT_SECRET, {expiresIn: `${timeToExpired}s`})
     },
 
-    async giveUserInfoByToken(token: string) {
+    async giveDeviceInfoByToken(token: string) {
         try {
             const result: any = await jwt.verify(token, settings.JWT_SECRET)
             return result

@@ -1,10 +1,9 @@
 import {securityRepository} from "../repositories/security-repository";
 import {DeviceSecurityType} from "../types/deviceSecurity-type";
-import {v4 as uuidv4} from "uuid";
 import {activeSessionsOutputType} from "../dataMapping/toActiveSessionsOutputType";
 
 export const securityService = {
-    async createUserDevice(userId: string, tokenInfo: any, userDevice: string, ipAddress: string) {
+    async createUserDevice(userId: string, tokenInfo: any, userDevice: string, ipAddress: string): Promise<DeviceSecurityType | null> {
         console.log('--->> userId from security service', userId)
         const createDevice: DeviceSecurityType = {
             userId,
@@ -44,11 +43,17 @@ export const securityService = {
         return activeSessions.map(activeSession => activeSessionsOutputType(activeSession))
     },
 
-    async giveDeviseById(deviceId: string) {
-        return await securityRepository.giveDeviseById(deviceId)
+    async giveDeviseById(deviceId: string): Promise<DeviceSecurityType | null> {
+        const device = await securityRepository.giveDeviseById(deviceId)
+
+        if (!device) {
+            return null
+        }
+
+        return device
     },
 
-    async deleteDeviceById(deviceId: string) {
+    async deleteDeviceById(deviceId: string): Promise<boolean> {
         return await securityRepository.deleteDeviceById(deviceId)
     },
 

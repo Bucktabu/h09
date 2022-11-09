@@ -13,13 +13,13 @@ export const refreshTokenValidation = async (req: Request, res: Response, next: 
         return res.sendStatus(401)
     }
 
-    const deviseInfo = await jwsService.giveUserInfoByToken(req.cookies.refreshToken)
+    const deviceInfo = await jwsService.giveDeviceInfoByToken(req.cookies.refreshToken)
 
-    if (!deviseInfo) {
+    if (!deviceInfo) {
         return res.sendStatus(401)
     }
 
-    const devise = await securityService.giveDeviseById(deviseInfo.deviceId)
+    const devise = await securityService.giveDeviseById(deviceInfo.deviceId)
 
     if (!devise) {
         return res.sendStatus(401)
@@ -32,6 +32,6 @@ export const refreshTokenValidation = async (req: Request, res: Response, next: 
     }
 
     req.user = user
-    req.body.deviseInfo = deviseInfo
+    req.body.deviseInfo = deviceInfo
     next()
 }
