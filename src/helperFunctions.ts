@@ -16,9 +16,9 @@ export const _generateHash = async (password: string, salt: string) => {
     return await bcrypt.hash(password, salt)
 }
 
-export const createToken = async (deviceId: string) => {
-    const accessToken = await jwsService.createJWT(deviceId, 100000)
-    const refreshToken = await jwsService.createJWT(deviceId, 200000)
+export const createToken = async (userId: string, deviceId: string) => {
+    const accessToken = await jwsService.createJWT(userId, deviceId, 10)
+    const refreshToken = await jwsService.createJWT(userId, deviceId, 20)
 
     return {accessToken, refreshToken}
 }

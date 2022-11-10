@@ -10,6 +10,14 @@ export const securityRepository = {
         }
     },
 
+    async giveLastSeveralSessions(ipAddress: string, sessionsСount: number) {
+        return await securityCollection
+            .find({'userDevice.ipAddress': ipAddress})
+            .sort('userDevice.iat', "desc")
+            .limit(5)
+            .toArray()
+    },
+
     async checkUserDevice(userId: string, deviceId: string) {
         return await securityCollection
             .findOne({$and: [{userId}, {'userDevice.deviceId': deviceId}]})

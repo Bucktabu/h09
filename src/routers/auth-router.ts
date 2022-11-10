@@ -1,5 +1,4 @@
 import {Request, Response, Router} from "express";
-import UserAgent from 'user-agents';
 import {v4 as uuidv4} from "uuid";
 import {authService} from "../domain/auth-service";
 import {securityService} from "../domain/security-service";
@@ -11,33 +10,20 @@ import {getAuthRouterMiddleware,
         postResendingRegistrationEmailMiddleware} from "../middlewares/authRouter-middleware";
 import {refreshTokenValidation} from "../middlewares/validation-middleware/refreshToken-validation";
 import {createToken} from "../helperFunctions";
-import {loginLimiter} from "../middlewares/validation-middleware/login-limiter";
+
 
 export const authRouter = Router({})
 
 authRouter.post('/login',
     postAuthRouterMiddleware,
-    //loginLimiter, // проверить потом записать в бд
     async (req: Request, res: Response) => {
+        const deviceId = uuidv4()
+        const token = await createToken(req.user!.id, deviceId)
+        const tokenPayload = await jwsService.giveDeviceInfoByToken(token.refreshToken)
 
-        const userDevice = new UserAgent().data
+        await securityService.createUserDevice(tokenPayload, req.ip) // can check and send 404
 
-        const deviceInfo = await securityService.giveUserDevice(req.user!.id, userDevice)
-
-        let deviceId
-        if (!deviceInfo) {
-            deviceId = uuidv4()
-        } else {
-            deviceId = deviceInfo.userDevice.deviceId
-        }
-
-        const token = await createToken(deviceId)
-
-        if (!deviceInfo) {
-            const tokenInfo = await jwsService.giveDeviceInfoByToken(token.refreshToken)
-            await securityService.createUserDevice(req.user!.id, tokenInfo, userDevice, req.ip)
-        }
-        console.log('----->> refreshToken:', token.refreshToken)
+        console.log('----->> refreshToken', token.refreshToken)
         return res.status(200)
             .cookie('refreshToken', token.refreshToken, {secure: true, httpOnly: true})
             .send({accessToken: token.accessToken})
@@ -47,7 +33,6 @@ authRouter.post('/login',
 authRouter.post('/registration',
     postRegistrationMiddleware,
     async (req: Request, res: Response) => {
-
         await authService.createUser(req.body.login, req.body.password, req.body.email)
 
         return res.sendStatus(204)
@@ -56,7 +41,6 @@ authRouter.post('/registration',
 
 authRouter.post('/registration-confirmation',
     async (req: Request, res: Response) => {
-
         const emailConfirmed = await authService.confirmEmail(req.body.code)
 
         if (!emailConfirmed) {
@@ -70,7 +54,6 @@ authRouter.post('/registration-confirmation',
 authRouter.post('/registration-email-resending',
     ...postResendingRegistrationEmailMiddleware,
     async (req: Request, res: Response) => {
-
         const result = await authService.resendConfirmRegistration(req.body.email)
 
         if (!result) {
@@ -84,9 +67,8 @@ authRouter.post('/registration-email-resending',
 authRouter.post('/refresh-token',
     refreshTokenValidation,
     async (req: Request, res: Response) => {
-
         await jwsService.addTokenInBlackList(req.cookies.refreshToken)
-        const token = await createToken(req.user!.id)
+        const token = await createToken(req.user!.id, req.body.tokenPayload.deviceId)
         console.log('----->> refreshToken:', token.refreshToken)
         return res.status(200)
             .cookie('refreshToken', token.refreshToken, {secure: true, httpOnly: true})

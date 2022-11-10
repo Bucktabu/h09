@@ -1,38 +1,31 @@
 import {securityRepository} from "../repositories/security-repository";
 import {DeviceSecurityType} from "../types/deviceSecurity-type";
 import {activeSessionsOutputType} from "../dataMapping/toActiveSessionsOutputType";
+import UserAgent from "user-agents";
 
 export const securityService = {
-    async createUserDevice(userId: string, tokenInfo: any, userDevice: any, ipAddress: string): Promise<DeviceSecurityType | null> {
+    async createUserDevice(tokenPayload: any, ipAddress: string): Promise<boolean> {
+        const userDevice: any = new UserAgent().data
 
         const createDevice: DeviceSecurityType = {
-            userId,
+            userId: tokenPayload.userId,
             userDevice: {
-                deviceId: tokenInfo.deviceId,
+                deviceId: tokenPayload.deviceId,
                 deviceTitle: userDevice.deviceCategory,
                 browser: userDevice.userAgent,
                 ipAddress,
-                iat: tokenInfo.iat,
-                exp: tokenInfo.exp
+                iat: tokenPayload.iat,
+                exp: tokenPayload.exp
             }
         }
-        console.log('-----> createDevice:', createDevice)
 
         const createdDevice = await securityRepository.createUserDevice(createDevice)
 
         if (!createdDevice) {
-            return null
+            return false
         }
 
-        return await securityRepository.giveUserDevice(userId, userDevice.deviceCategory, userDevice.userAgent)
-    },
-
-    async checkUserDevice(userId: string, deviceId: string) {
-        return await securityRepository.checkUserDevice(userId, deviceId)
-    },
-
-    async giveUserDevice(userId: string, userDevice: any): Promise<DeviceSecurityType | null> {
-        return await securityRepository.giveUserDevice(userId, userDevice.deviceCategory, userDevice.userAgent)
+        return true
     },
 
     async giveAllActiveSessions(userId: string) {

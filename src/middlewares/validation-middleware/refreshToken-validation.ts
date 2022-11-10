@@ -8,7 +8,9 @@ export const refreshTokenValidation = async (req: Request, res: Response, next: 
     // достаем из бд информацию о девайсе, в которой к айди девайса привязан айди пользователя
     // и находим пользователя по айди
 
-    if (!req.cookies.refreshToken) return res.sendStatus(401)
+    if (!req.cookies.refreshToken) {
+        return res.sendStatus(401)
+    }
 
     const tokenInBlackList = await jwsService.checkTokenInBlackList(req.cookies.refreshToken)
 
@@ -16,25 +18,19 @@ export const refreshTokenValidation = async (req: Request, res: Response, next: 
         return res.sendStatus(401)
     }
 
-    const deviceInfo = await jwsService.giveDeviceInfoByToken(req.cookies.refreshToken) // payload unpackAndCheck
+    const tokenPayload = await jwsService.giveDeviceInfoByToken(req.cookies.refreshToken)
 
-    if (!deviceInfo) {
+    if (!tokenPayload) {
         return res.sendStatus(401)
     }
 
-    const devise = await securityService.giveDeviceById(deviceInfo.deviceId)
-
-    if (!devise) {
-        return res.sendStatus(401)
-    }
-
-    const user = await usersService.giveUserById(devise.userId)
+    const user = await usersService.giveUserById(tokenPayload.userId)
 
     if (!user) {
         return res.sendStatus(401)
     }
 
     req.user = user
-    req.body.deviseInfo = deviceInfo
+    req.body.tokenPayload = tokenPayload
     next()
 }

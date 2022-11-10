@@ -1,20 +1,29 @@
 import {RateLimiterMemory} from "rate-limiter-flexible";
 import {Request, Response, NextFunction} from "express";
+import {securityRepository} from "../../repositories/security-repository";
 
-export const loginLimiter = (req: Request, res: Response, next: NextFunction) => {
-    const opts = {
-        points: 5,
-        duration: 10,
+export const loginLimiter = async (req: Request, res: Response, next: NextFunction) => {
+    const lastSessions = await securityRepository.giveLastSeveralSessions(req.ip, 5)
+
+    if (Number(lastSessions[0].userDevice.iat) - Number(lastSessions[lastSessions.length - 1].userDevice.iat) < 10) {
+        return res.sendStatus(429) // More than 5 attempts from one IP-address during 10 seconds
     }
-    console.log('1')
-    const rateLimiter = new RateLimiterMemory(opts)
 
-    rateLimiter.consume(req.ip, 1)
-        .then((rateLimiterRes) => {
-            console.log('2')
-            next()
-        })
-        .catch((rateLimiterRes) => {
-            return res.sendStatus(429)
-        });
+    return next()
+
+    // const opts = {
+    //     points: 5,
+    //     duration: 10,
+    // }
+    // console.log('1')
+    // const rateLimiter = new RateLimiterMemory(opts)
+    //
+    // rateLimiter.consume(req.ip, 1)
+    //     .then((rateLimiterRes) => {
+    //         console.log('2')
+    //         next()
+    //     })
+    //     .catch((rateLimiterRes) => {
+    //         return res.sendStatus(429)
+    //     });
 }

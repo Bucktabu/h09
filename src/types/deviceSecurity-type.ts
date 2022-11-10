@@ -5,7 +5,7 @@ export type DeviceSecurityType = {
     /**
      *  UserDeviceType: deviceId
      *                  deviceTitle
-     *                  brouser
+     *                  browser
      *                  ip-address
      *                  iat
      *                  end

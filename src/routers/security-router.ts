@@ -5,13 +5,9 @@ import {refreshTokenValidation} from "../middlewares/validation-middleware/refre
 export const securityRouter = Router({})
 
 securityRouter.get('/devices',
-    refreshTokenValidation, // если я записываю в токен айди устройства, то у меня рушится вся логика поиска юзера
+    refreshTokenValidation,
     async (req: Request, res: Response) => {
-        const activeSessions = await securityService.giveAllActiveSessions(req.user!.id)
-
-        if (!activeSessions) {
-            return 404
-        }
+        const activeSessions = await securityService.giveAllActiveSessions(req.user!.id) // can check and send 404
 
         return res.status(200).send(activeSessions)
     }
@@ -20,7 +16,7 @@ securityRouter.get('/devices',
 securityRouter.delete('/devices',
     refreshTokenValidation,
     async (req: Request, res: Response) => {
-        const result = await securityService.deleteAllActiveSessions(req.body.deviseInfo.deviceId, req.user!.id)
+        const result = await securityService.deleteAllActiveSessions(req.user!.id, req.body.tokenPayload.deviceId)
 
         if (!result) {
             return res.sendStatus(404)
@@ -30,7 +26,7 @@ securityRouter.delete('/devices',
     }
 )
 
-securityRouter.delete('/devices/:deviceId', // возникает баг или фича, что при удалении единиственной активной сессии, нужно повторно логиниться
+securityRouter.delete('/devices/:deviceId',
     refreshTokenValidation,
     async (req: Request, res: Response) => {
 
