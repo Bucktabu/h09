@@ -67,11 +67,8 @@ authRouter.post('/registration-email-resending',
 authRouter.post('/refresh-token',
     refreshTokenValidation,
     async (req: Request, res: Response) => {
-        await jwsService.addTokenInBlackList(req.cookies.refreshToken)
-        const token = await createToken(req.body.tokenPayload.userId, req.body.tokenPayload.deviceId)
-        const tokenPayload = await jwsService.giveTokenPayload(token.refreshToken)
-        await securityService.updateCurrentActiveSessions(tokenPayload.deviceId, tokenPayload.iat, tokenPayload.exp)
-        console.log('----->> refreshToken:', token.refreshToken)
+        const token = await securityService.createNewRefreshToken(req.cookies.refreshToken, req.body.tokenPayload)
+
         return res.status(200)
             .cookie('refreshToken', token.refreshToken, {secure: true, httpOnly: true})
             .send({accessToken: token.accessToken})
@@ -81,7 +78,7 @@ authRouter.post('/refresh-token',
 authRouter.post('/logout',
     refreshTokenValidation,
     async (req: Request, res: Response) => {
-        await jwsService.addTokenInBlackList(req.cookies.refreshToken)
+        await securityService.logoutFromCurrentSession(req.cookies.refreshToken)
 
         return res.sendStatus(204)
     }

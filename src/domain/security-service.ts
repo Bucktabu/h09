@@ -2,6 +2,8 @@ import {securityRepository} from "../repositories/security-repository";
 import {DeviceSecurityType} from "../types/deviceSecurity-type";
 import {activeSessionsOutputType} from "../dataMapping/toActiveSessionsOutputType";
 import UserAgent from "user-agents";
+import {jwsService} from "../application/jws-service";
+import {createToken} from "../helperFunctions";
 
 export const securityService = {
     async createUserDevice(tokenPayload: any, ipAddress: string): Promise<boolean> {
@@ -28,6 +30,15 @@ export const securityService = {
         return true
     },
 
+    async createNewRefreshToken(refreshToken: string, tokenPayload: any) {
+        await jwsService.addTokenInBlackList(refreshToken)
+        const token = await createToken(tokenPayload.userId, tokenPayload.deviceId)
+        const newTokenPayload = await jwsService.giveTokenPayload(token.refreshToken)
+        await securityService.updateCurrentActiveSessions(newTokenPayload.deviceId, newTokenPayload.iat, newTokenPayload.exp)
+
+        return token
+    },
+
     async giveAllActiveSessions(userId: string) {
         const activeSessions = await securityRepository.giveAllActiveSessions(userId)
 
@@ -52,17 +63,19 @@ export const securityService = {
         return await securityRepository.updateCurrentActiveSessions(deviceId, iat, exp)
     },
 
+    async logoutFromCurrentSession(refreshToken: string) {
+        await jwsService.addTokenInBlackList(refreshToken)
+        const tokenPayload = await jwsService.giveTokenPayload(refreshToken)
+        await securityRepository.deleteDeviceById(tokenPayload.deviceId)
+
+        return
+    },
+
     async deleteDeviceById(deviceId: string): Promise<boolean> {
         return await securityRepository.deleteDeviceById(deviceId)
     },
 
     async deleteAllActiveSessions(userId: string, deviceId: string): Promise<boolean> {
-        const result = await securityRepository.deleteAllActiveSessions(userId, deviceId)
-
-        if (!result) {
-            return false
-        }
-
-        return true
+        return  await securityRepository.deleteAllActiveSessions(userId, deviceId)
     }
 }

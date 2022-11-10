@@ -41,7 +41,7 @@ export const securityRepository = {
         return result.matchedCount === 1
     },
 
-    async deleteDeviceById(deviceId: string) {
+    async deleteDeviceById(deviceId: string): Promise<boolean> {
         const result = await securityCollection.deleteOne({'userDevice.deviceId': deviceId})
 
         return result.deletedCount === 1

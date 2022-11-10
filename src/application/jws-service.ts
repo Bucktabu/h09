@@ -17,7 +17,7 @@ export const jwsService = {
     },
 
     async addTokenInBlackList(refreshToken: string) {
-        return await jwtBlackList.removeRefreshToken(refreshToken)
+        return await jwtBlackList.addTokenInBlackList(refreshToken)
     },
 
     async checkTokenInBlackList(refreshToken: string) {
