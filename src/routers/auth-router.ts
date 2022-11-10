@@ -23,7 +23,7 @@ authRouter.post('/login',
 
         await securityService.createUserDevice(tokenPayload, req.ip) // can check and send 404
 
-        console.log('----->> refreshToken', token.refreshToken)
+        //console.log('----->> refreshToken', token.refreshToken)
         return res.status(200)
             .cookie('refreshToken', token.refreshToken, {secure: true, httpOnly: true})
             .send({accessToken: token.accessToken})
@@ -57,7 +57,7 @@ authRouter.post('/registration-email-resending',
         const result = await authService.resendConfirmRegistration(req.body.email)
 
         if (!result) {
-            return res.status(400).json({ errorsMessages: [{ message: 'Wrong email', field: "email" }] }) // поменял send на json и тесты стали проходить
+            return res.status(400).json({ errorsMessages: [{ message: 'Wrong email', field: "email" }] }) // TODO ??? поменял send на json и тесты стали проходить
         }
 
         return res.sendStatus(204)

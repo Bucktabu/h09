@@ -13,25 +13,9 @@ export const securityRepository = {
     async giveLastSeveralSessions(ipAddress: string, sessionsСount: number) {
         return await securityCollection
             .find({'userDevice.ipAddress': ipAddress})
-            .sort('userDevice.iat', "desc")
-            .limit(5)
+            .sort('userDevice.iat', 'desc')
+            .limit(sessionsСount)
             .toArray()
-    },
-
-    async checkUserDevice(userId: string, deviceId: string) {
-        return await securityCollection
-            .findOne({$and: [{userId}, {'userDevice.deviceId': deviceId}]})
-    },
-
-    async giveUserDevice(userId: string, deviceTitle: string, browser: string): Promise<DeviceSecurityType | null> {
-        return await securityCollection
-            .findOne({
-                $and: [
-                    {userId},
-                    {'userDevice.deviceTitle': deviceTitle},
-                    {'userDevice.browser': browser}
-                ]
-            }, {projection: {_id: false}})
     },
 
     async giveAllActiveSessions(userId: string) {
