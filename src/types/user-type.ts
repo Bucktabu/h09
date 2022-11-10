@@ -13,7 +13,8 @@ export type UserDBType = {
     email: string,
     passwordHash: string,
     passwordSalt: string,
-    createdAt: string
+    createdAt: string,
+    ipAddress?:string
 }
 
 export type UsersDBType = UserDBType[]

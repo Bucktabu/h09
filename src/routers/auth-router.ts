@@ -33,7 +33,9 @@ authRouter.post('/login',
 authRouter.post('/registration',
     postRegistrationMiddleware,
     async (req: Request, res: Response) => {
-        await authService.createUser(req.body.login, req.body.password, req.body.email)
+        await authService.giveRegistrationByIpAddress(req.ip, 5)
+
+        await authService.createUser(req.body.login, req.body.password, req.body.email, req.ip)
 
         return res.sendStatus(204)
     }

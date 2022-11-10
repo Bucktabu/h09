@@ -7,9 +7,10 @@ import {UserAccountType} from "../types/user-account-type";
 import {_generateHash} from "../helperFunctions";
 import {emailConfirmationRepository} from "../repositories/emailConfirmation-repository";
 import {jwsService} from "../application/jws-service";
+import {usersService} from "./user-service";
 
 export const authService = {
-    async createUser(login: string, password: string, email: string) {
+    async createUser(login: string, password: string, email: string, ipAddress: string) {
 
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await _generateHash(password, passwordSalt)
@@ -22,7 +23,8 @@ export const authService = {
                 email,
                 passwordSalt,
                 passwordHash,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                ipAddress
             },
             emailConfirmation: {
                 id: userAccountId,
@@ -77,20 +79,6 @@ export const authService = {
         return await emailsManager.sendConfirmationEmail(userAccount)
     },
 
-    async saveUserDevices(ipAddress: string, userDeviceIngo: any, refreshToken: string) {
-        const userInfo = await jwsService.giveTokenPayload(refreshToken)
-        console.log('-----> userDeviceIngo: ', userDeviceIngo)
-        console.log('-----> ipAddress: ', ipAddress)
-        const userDevice = {
-            userId: userInfo.userId,
-            deviceId: uuidv4(),
-            ipAddress,
-
-        }
-
-        return
-    },
-
     async createUserAccount(userAccount: UserAccountType) {
         const user = await usersRepository.createNewUser(userAccount.accountData)
         const emailConfirmation = await emailConfirmationRepository.createEmailConfirmation(userAccount.emailConfirmation)
@@ -118,5 +106,15 @@ export const authService = {
         }
 
         return emailConfirmation
+    },
+
+    async giveRegistrationByIpAddress(ipAddress: string, registrationsCount: number) {
+        const lastRegistration = await usersRepository.giveRegistrationByIpAddress(ipAddress, registrationsCount)
+        console.log('lastRegistration', lastRegistration)
+        if (lastRegistration.length < 5) {
+            return true
+        }
+
+        //if (Date.now() - Number(lastRegistration[lastRegistration.length - 1]))
     }
 }
