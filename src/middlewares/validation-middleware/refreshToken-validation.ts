@@ -18,7 +18,7 @@ export const refreshTokenValidation = async (req: Request, res: Response, next: 
         return res.sendStatus(401)
     }
 
-    const tokenPayload = await jwsService.giveDeviceInfoByToken(req.cookies.refreshToken)
+    const tokenPayload = await jwsService.giveTokenPayload(req.cookies.refreshToken)
 
     if (!tokenPayload) {
         return res.sendStatus(401)

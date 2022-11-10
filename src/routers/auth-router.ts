@@ -19,7 +19,7 @@ authRouter.post('/login',
     async (req: Request, res: Response) => {
         const deviceId = uuidv4()
         const token = await createToken(req.user!.id, deviceId)
-        const tokenPayload = await jwsService.giveDeviceInfoByToken(token.refreshToken)
+        const tokenPayload = await jwsService.giveTokenPayload(token.refreshToken)
 
         await securityService.createUserDevice(tokenPayload, req.ip) // can check and send 404
 
@@ -68,7 +68,9 @@ authRouter.post('/refresh-token',
     refreshTokenValidation,
     async (req: Request, res: Response) => {
         await jwsService.addTokenInBlackList(req.cookies.refreshToken)
-        const token = await createToken(req.user!.id, req.body.tokenPayload.deviceId)
+        const token = await createToken(req.body.tokenPayload.userId, req.body.tokenPayload.deviceId)
+        const tokenPayload = await jwsService.giveTokenPayload(token.refreshToken)
+        await securityService.updateCurrentActiveSessions(tokenPayload.deviceId, tokenPayload.iat, tokenPayload.exp)
         console.log('----->> refreshToken:', token.refreshToken)
         return res.status(200)
             .cookie('refreshToken', token.refreshToken, {secure: true, httpOnly: true})

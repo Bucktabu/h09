@@ -48,6 +48,10 @@ export const securityService = {
         return device
     },
 
+    async updateCurrentActiveSessions(deviceId: string, iat: string, exp: string) {
+        return await securityRepository.updateCurrentActiveSessions(deviceId, iat, exp)
+    },
+
     async deleteDeviceById(deviceId: string): Promise<boolean> {
         return await securityRepository.deleteDeviceById(deviceId)
     },

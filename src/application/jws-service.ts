@@ -7,7 +7,7 @@ export const jwsService = {
         return jwt.sign({userId, deviceId}, settings.JWT_SECRET, {expiresIn: `${timeToExpired}s`})
     },
 
-    async giveDeviceInfoByToken(token: string) {
+    async giveTokenPayload(token: string) {
         try {
             const result: any = await jwt.verify(token, settings.JWT_SECRET)
             return result

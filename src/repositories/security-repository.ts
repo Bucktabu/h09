@@ -28,6 +28,19 @@ export const securityRepository = {
             .findOne({'userDevice.deviceId': deviceId}, {projection: {_id: false}})
     },
 
+    async updateCurrentActiveSessions(deviceId: string, iat: string, exp: string): Promise<boolean> {
+        const result = await securityCollection
+            .updateOne({
+                    'userDevice.deviceId': deviceId
+                },
+                {
+                    $set: {'userDevice.iat': iat, 'userDevice.exp': exp}
+                }
+            )
+
+        return result.matchedCount === 1
+    },
+
     async deleteDeviceById(deviceId: string) {
         const result = await securityCollection.deleteOne({'userDevice.deviceId': deviceId})
 
