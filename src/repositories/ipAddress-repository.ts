@@ -1,6 +1,5 @@
 import {ipAddressCollection} from "./db";
 
-
 export const ipAddressRepository = {
     async deleteAll(): Promise<boolean> {
         try {
