@@ -16,6 +16,16 @@ export const emailConfirmationRepository = {
             .findOne({$or: [{confirmationCode: codeOrId}, {id: codeOrId}]})
     },
 
+    async giveConfirmationByIpAddress(ipAddress: string) {
+        return await emailConfirmCollection
+            .find({'accountData.ipAddress': ipAddress}, {projection: {_id: false, accountData: false}})
+            .toArray()
+    },
+
+    // async updateConfirmationDate(ipAddress: string) {
+    //     const result = await usersCollection.updateMany({'accountData.ipAddress': ipAddress}, {$set: {lastConfirmation}})
+    // },
+
     async updateConfirmationCode(id: string, confirmationCode: string) {
         let result = await emailConfirmCollection
             .updateOne({id}, {$set: {confirmationCode}})

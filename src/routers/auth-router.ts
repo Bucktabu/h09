@@ -10,6 +10,7 @@ import {getAuthRouterMiddleware,
         postResendingRegistrationEmailMiddleware} from "../middlewares/authRouter-middleware";
 import {refreshTokenValidation} from "../middlewares/validation-middleware/refreshToken-validation";
 import {createToken} from "../helperFunctions";
+import {ipAddressLimiter} from "../middlewares/validation-middleware/ipAddressLimiter";
 
 
 export const authRouter = Router({})
@@ -33,7 +34,11 @@ authRouter.post('/login',
 authRouter.post('/registration',
     postRegistrationMiddleware,
     async (req: Request, res: Response) => {
-        await authService.giveRegistrationByIpAddress(req.ip, 5)
+        // const result = await authService.checkRegistrationByIpAddress(req.ip, 5)
+        //
+        // if (!result) {
+        //     return res.sendStatus(429)
+        // }
 
         await authService.createUser(req.body.login, req.body.password, req.body.email, req.ip)
 
@@ -42,11 +47,19 @@ authRouter.post('/registration',
 )
 
 authRouter.post('/registration-confirmation',
+    ipAddressLimiter,
     async (req: Request, res: Response) => {
+        // const result = await authService.checkConfirmationByIpAddress(req.ip, 5)
+        //
+        // if (!result) {
+        //     return res.sendStatus(429)
+        // }
+
         const emailConfirmed = await authService.confirmEmail(req.body.code)
 
         if (!emailConfirmed) {
-            return res.status(400).send({errorsMessages: [{ message: 'Bad Request', field: "code" }]})
+            return res.status(400)
+                .send({errorsMessages: [{ message: 'Bad Request', field: "code" }]})
         }
 
         return res.sendStatus(204)
@@ -59,7 +72,8 @@ authRouter.post('/registration-email-resending',
         const result = await authService.resendConfirmRegistration(req.body.email)
 
         if (!result) {
-            return res.status(400).json({ errorsMessages: [{ message: 'Wrong email', field: "email" }] }) // TODO ??? поменял send на json и тесты стали проходить
+            return res.status(400)
+                .json({ errorsMessages: [{ message: 'Wrong email', field: "email" }] }) // TODO ??? поменял send на json и тесты стали проходить
         }
 
         return res.sendStatus(204)

@@ -37,7 +37,7 @@ export const authService = {
                 isConfirmed: false
             }
         }
-
+        console.log('----->> confirmationCode:', userAccount.emailConfirmation.confirmationCode)
         const createdAccount = await this.createUserAccount(userAccount)
 
         if (!createdAccount) {
@@ -108,13 +108,30 @@ export const authService = {
         return emailConfirmation
     },
 
-    async giveRegistrationByIpAddress(ipAddress: string, registrationsCount: number) {
+    async checkRegistrationByIpAddress(ipAddress: string, registrationsCount: number): Promise<boolean> {
         const lastRegistration = await usersRepository.giveRegistrationByIpAddress(ipAddress, registrationsCount)
         console.log('lastRegistration', lastRegistration)
         if (lastRegistration.length < 5) {
             return true
         }
 
-        //if (Date.now() - Number(lastRegistration[lastRegistration.length - 1]))
+        if (Date.now() - Number(lastRegistration[lastRegistration.length - 1].createdAt) * 1000 <= 10000) {
+            return false
+        }
+
+        return true
+    },
+
+    async checkConfirmationByIpAddress(ipAddress: string, registrationsCount: number): Promise<boolean> {
+        const user = await usersRepository.giveRegistrationByIpAddress(ipAddress, 1)
+        const emailConfirmation = await emailConfirmationRepository.giveConfirmationByIpAddress(ipAddress)
+
+        console.log('lastConfirmation', emailConfirmation)
+        // if (emailConfirmation < 5) {
+        //     await usersRepository.updateConfirmationDate(ipAddress, )
+        //     return true
+        // }
+
+        return true
     }
 }

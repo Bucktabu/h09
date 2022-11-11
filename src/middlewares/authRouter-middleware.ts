@@ -6,8 +6,9 @@ import {userEmailValidation,
 import {loginOrEmailExistValidation} from "./validation-middleware/loginOrEmailExist-validation";
 import {checkCredential} from "./validation-middleware/checkCredential";
 import {loginLimiter} from "./validation-middleware/login-limiter";
+import {ipAddressLimiter} from "./validation-middleware/ipAddressLimiter";
 
 export const getAuthRouterMiddleware = [authentication]
-export const postAuthRouterMiddleware = [userLoginValidation, userPasswordValidation, inputValidation, checkCredential, loginLimiter]
-export const postRegistrationMiddleware = [userLoginValidation, userPasswordValidation, userEmailValidation, inputValidation, loginOrEmailExistValidation]
-export const postResendingRegistrationEmailMiddleware = [userEmailValidation, /*emailConfirmedValidation,*/ inputValidation]
+export const postAuthRouterMiddleware = [userLoginValidation, userPasswordValidation, inputValidation, checkCredential, /*loginLimiter*/ ipAddressLimiter]
+export const postRegistrationMiddleware = [userLoginValidation, userPasswordValidation, userEmailValidation, inputValidation, loginOrEmailExistValidation, ipAddressLimiter]
+export const postResendingRegistrationEmailMiddleware = [userEmailValidation, inputValidation, ipAddressLimiter]

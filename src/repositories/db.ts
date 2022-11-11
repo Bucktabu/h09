@@ -9,6 +9,7 @@ import {MongoClient} from 'mongodb';
 import {PostType} from "../types/posts-type";
 import {TokenType} from "../types/token-type";
 import {UserDBType} from "../types/user-type";
+import {UserIpAddressType} from "../types/UserIpAddress";
 
 const mongoUri = process.env.MONGO_URI || 'mongodb://0.0.0.0:27017/?maxPoolSize=20&w=majority';
 
@@ -17,6 +18,7 @@ const db = client.db('blogsAndPostsDb')
 
 export const blogsCollection = db.collection<BlogType>('blogs')
 export const commentsCollection = db.collection<CommentBDType>('comments')
+export const ipAddressCollection = db.collection<UserIpAddressType>('ipAddress')
 export const securityCollection = db.collection<DeviceSecurityType>('deviceSecurity')
 export const emailConfirmCollection = db.collection<EmailConfirmationType>('emailConfirm')
 export const postsCollection = db.collection<PostType>('posts')

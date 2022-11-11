@@ -1547,6 +1547,13 @@ expect@^29.0.0, expect@^29.0.3:
     jest-message-util "^29.0.3"
     jest-util "^29.0.3"
 
+express-ip-access-control@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/express-ip-access-control/-/express-ip-access-control-1.1.0.tgz#317492d32c32a91ef29abd8c4311f3a02e9c85ed"
+  integrity sha512-d60HXCIew2P/RezwQ4wGcGIW3P+YafHazp1ZKlKejRUGkyv4PtTWB0/YbHXFfkxGAh1o2/L0s0D7eXk3d062BA==
+  dependencies:
+    ipaddr.js "^2.0.1"
+
 express-limiter@^1.6.1:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/express-limiter/-/express-limiter-1.6.1.tgz#70ede144f9e875e3c7e120644018a6f7784bda71"
@@ -1884,6 +1891,11 @@ ipaddr.js@1.9.1:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.9.1.tgz#bff38543eeb8984825079ff3a2a8e6cbd46781b3"
   integrity sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==
+
+ipaddr.js@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-2.0.1.tgz#eca256a7a877e917aeb368b0a7497ddf42ef81c0"
+  integrity sha512-1qTgH9NG+IIJ4yfKs2e6Pp1bZg8wbDbKHT21HrLIeYBTRLgMYKnMTPAuI3Lcs61nfx5h1xlXnbJtH1kX5/d/ng==
 
 is-arrayish@^0.2.1:
   version "0.2.1"

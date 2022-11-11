@@ -1,4 +1,4 @@
-import {usersCollection} from "./db";
+import {emailConfirmCollection, usersCollection} from "./db";
 import {UserDBType, UsersType} from "../types/user-type";
 import {giveSkipNumber} from "../helperFunctions";
 
