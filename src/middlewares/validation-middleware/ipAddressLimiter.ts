@@ -11,7 +11,7 @@ export const ipAddressLimiter = async (req: Request, res: Response, next: NextFu
             timer: 0,
             count: 0
         })
-
+        console.log('here')
         return next()
     }
 
@@ -21,11 +21,12 @@ export const ipAddressLimiter = async (req: Request, res: Response, next: NextFu
     await ipAddressCollection.updateOne({ipAddress: req.ip}, {$set: {count: count, timer}})
 
     if (ipAddress.timer > 10000) {
-        await ipAddressCollection.updateOne({ipAddress: req.ip}, {$set: {at: Date.now(), count: 1}})
+        await ipAddressCollection.updateOne({ipAddress: req.ip}, {$set: {at: Date.now(), count: 0}})
     }
 
-    if (ipAddress.count === 5) {
-        await ipAddressCollection.updateOne({ipAddress: req.ip}, {$set: {count: 4}})
+    if (ipAddress.count === 4) {
+        await ipAddressCollection.updateOne({ipAddress: req.ip}, {$set: {at: Date.now(), count: 3}})
+        console.log('429')
         return res.sendStatus(429)
     }
 
