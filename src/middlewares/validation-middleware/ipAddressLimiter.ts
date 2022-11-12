@@ -3,9 +3,10 @@ import {ipAddressCollection} from "../../repositories/db";
 
 export const ipAddressLimiter = async (req: Request, res: Response, next: NextFunction) => {
     const ip = req.ip
+    const endpoint = req.url
     const connectionAt = Date.now()
-    await ipAddressCollection.insertOne({ipAddress: ip, connectionAt})
-    const connectionsCount = await ipAddressCollection.countDocuments({ipAddress: ip, connectionAt: {$gte: (connectionAt - 10000)}})
+    await ipAddressCollection.insertOne({ipAddress: ip, endpoint, connectionAt})
+    const connectionsCount = await ipAddressCollection.countDocuments({ipAddress: ip, endpoint, connectionAt: {$gte: (connectionAt - 10000)}})
     if (connectionsCount > 5) return res.sendStatus(429)
     return next()
     // const ipAddress = await ipAddressCollection.findOne({ipAddress: req.ip})
