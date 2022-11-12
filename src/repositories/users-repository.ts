@@ -43,14 +43,6 @@ export const usersRepository = {
         return await usersCollection.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]})
     },
 
-    async giveRegistrationByIpAddress(ipAddress: string, registrationsCount: number) {
-        return await usersCollection
-            .find({'accountData.ipAddress': ipAddress}, {projection: {_id: false, emailConfirmation: false}})
-            .sort('accountData.createdAt', 'desc')
-            .limit(registrationsCount)
-            .toArray()
-    },
-
     async deleteUserById(userId: string): Promise<boolean> {
         const result = await usersCollection.deleteOne({id: userId})
         return result.deletedCount === 1

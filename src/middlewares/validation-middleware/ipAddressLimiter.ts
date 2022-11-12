@@ -7,8 +7,13 @@ export const ipAddressLimiter = async (req: Request, res: Response, next: NextFu
     const connectionAt = Date.now()
     await ipAddressCollection.insertOne({ipAddress: ip, endpoint, connectionAt})
     const connectionsCount = await ipAddressCollection.countDocuments({ipAddress: ip, endpoint, connectionAt: {$gte: (connectionAt - 10000)}})
-    if (connectionsCount > 5) return res.sendStatus(429)
+
+    if (connectionsCount > 5) {
+        return res.sendStatus(429)
+    }
+
     return next()
+
     // const ipAddress = await ipAddressCollection.findOne({ipAddress: req.ip})
     //
     // if (!ipAddress) {

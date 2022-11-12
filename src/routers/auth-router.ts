@@ -34,12 +34,6 @@ authRouter.post('/login',
 authRouter.post('/registration',
     postRegistrationMiddleware,
     async (req: Request, res: Response) => {
-        // const result = await authService.checkRegistrationByIpAddress(req.ip, 5)
-        //
-        // if (!result) {
-        //     return res.sendStatus(429)
-        // }
-
         await authService.createUser(req.body.login, req.body.password, req.body.email, req.ip)
 
         return res.sendStatus(204)
@@ -49,12 +43,6 @@ authRouter.post('/registration',
 authRouter.post('/registration-confirmation',
     ipAddressLimiter,
     async (req: Request, res: Response) => {
-        // const result = await authService.checkConfirmationByIpAddress(req.ip, 5)
-        //
-        // if (!result) {
-        //     return res.sendStatus(429)
-        // }
-
         const emailConfirmed = await authService.confirmEmail(req.body.code)
 
         if (!emailConfirmed) {
